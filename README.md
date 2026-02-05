@@ -14,9 +14,7 @@ blender-building/
 │   ├── environment.py          # 환경 요소 (나무, 도로)
 │   └── scenes.py               # 씬 생성 함수
 ├── output/                     # 생성된 GLTF 파일
-│   ├── office_building.gltf
-│   ├── shop_building.gltf
-│   └── modern_building.gltf
+│   └── combined_scene.gltf     # 모든 건물이 포함된 통합 씬
 ├── src/                        # React 웹 뷰어
 │   ├── App.jsx
 │   └── components/
@@ -50,7 +48,7 @@ blender-building/
 
 ```bash
 # Blender CLI로 실행
-blender --background --python -c "from scripts.scenes import create_office_scene, create_shop_scene, create_modern_scene; create_office_scene(); create_shop_scene(); create_modern_scene()"
+blender --background --python -c "from scripts.scenes import create_combined_scene; create_combined_scene()"
 ```
 
 또는 Blender GUI에서:
@@ -68,11 +66,15 @@ pnpm install
 pnpm dev
 ```
 
-## 생성되는 건물
+## 생성되는 씬
 
-- **Office Building**: 3층 오피스 빌딩 + 도로 + 나무
-- **Shop Building**: 1층 상점 + 지붕 간판
-- **Modern Building**: 3층 모던 스타일 건물 + 도로 + 나무
+통합 씬(`combined_scene.gltf`)에 다음 건물들이 포함됩니다:
+
+- **Office Building** (왼쪽): 3층 오피스 빌딩
+- **Shop Building** (가운데): 1층 상점 + 지붕 간판
+- **Modern Building** (오른쪽): 3층 모던 스타일 건물
+- **도로**: 전체 건물 앞을 지나는 도로
+- **나무**: 건물 주변에 배치된 나무들
 
 ## 웹 뷰어 조작
 

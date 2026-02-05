@@ -1,30 +1,8 @@
-import { useState, Suspense } from 'react'
+import { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, ContactShadows, Grid, Sky } from '@react-three/drei'
 import BuildingModel from './components/BuildingModel'
-import Sidebar from './components/Sidebar'
 import './App.css'
-
-const buildings = [
-  {
-    id: 'office_building',
-    name: 'Office Building',
-    description: '3-story office with OFFICE text, road, and trees',
-    file: '/output/office_building.gltf'
-  },
-  {
-    id: 'shop_building',
-    name: 'Shop Building',
-    description: '1-story shop with SHOP text and entrance',
-    file: '/output/shop_building.gltf'
-  },
-  {
-    id: 'modern_building',
-    name: 'Modern Building',
-    description: '3-story modern dark building with MODERN text',
-    file: '/output/modern_building.gltf'
-  }
-]
 
 function LoadingFallback() {
   return (
@@ -45,19 +23,12 @@ function Ground() {
 }
 
 function App() {
-  const [selectedBuilding, setSelectedBuilding] = useState(buildings[0])
-
   return (
     <div className="app">
-      <Sidebar
-        buildings={buildings}
-        selectedBuilding={selectedBuilding}
-        onSelect={setSelectedBuilding}
-      />
-      <main className="canvas-container">
+      <main className="canvas-container full-width">
         <Canvas
           shadows
-          camera={{ position: [20, 15, 20], fov: 60 }}
+          camera={{ position: [40, 30, 40], fov: 60 }}
           gl={{ antialias: true }}
         >
           <color attach="background" args={['#1a1a2e']} />
@@ -78,7 +49,7 @@ function App() {
           <hemisphereLight args={['#87ceeb', '#4a6741', 0.3]} />
 
           <Suspense fallback={<LoadingFallback />}>
-            <BuildingModel key={selectedBuilding.id} url={selectedBuilding.file} />
+            <BuildingModel url="/output/combined_scene.gltf" />
           </Suspense>
 
           <Ground />
@@ -104,8 +75,8 @@ function App() {
           <OrbitControls
             enableDamping
             dampingFactor={0.05}
-            minDistance={5}
-            maxDistance={100}
+            minDistance={10}
+            maxDistance={150}
             minPolarAngle={Math.PI / 3}
             maxPolarAngle={Math.PI / 3}
             target={[0, 3, 0]}
@@ -120,8 +91,8 @@ function App() {
         </div>
 
         <div className="info">
-          <h3>{selectedBuilding.name}</h3>
-          <p>{selectedBuilding.description}</p>
+          <h3>Combined Scene</h3>
+          <p>Office, Shop, Modern buildings with road and trees</p>
         </div>
       </main>
     </div>
