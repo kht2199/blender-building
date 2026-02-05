@@ -7,12 +7,6 @@ import './App.css'
 
 const buildings = [
   {
-    id: 'building_basic',
-    name: 'Basic Building',
-    description: '2-story building with TEST text, entrance, and trees',
-    file: '/output/building_basic.gltf'
-  },
-  {
     id: 'office_building',
     name: 'Office Building',
     description: '3-story office with OFFICE text, road, and trees',
@@ -23,12 +17,6 @@ const buildings = [
     name: 'Shop Building',
     description: '1-story shop with SHOP text and entrance',
     file: '/output/shop_building.gltf'
-  },
-  {
-    id: 'city_block',
-    name: 'City Block',
-    description: 'Multiple buildings: apartment, office, cafe with road',
-    file: '/output/city_block.gltf'
   },
   {
     id: 'modern_building',
