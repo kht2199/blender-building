@@ -9,12 +9,9 @@ const themes = {
     background: '#000000',
     ground: '#3a5a40',
     gridColor: '#0f3460',
-    ambientIntensity: 0.3,
-    skyPosition: [100, 10, 100],
-    hemisphereSky: '#1a1a2e',
-    hemisphereGround: '#2a3a2a',
-    cloudColor: '#2a2a3e',
-    cloudOpacity: 0.5,
+    ambientIntensity: 0.1,
+    hemisphereSky: '#0a0a15',
+    hemisphereGround: '#1a2a1a',
   },
   light: {
     background: '#e8f4f8',
@@ -59,6 +56,62 @@ function Clouds({ color, opacity }) {
   )
 }
 
+function StreetLight({ position }) {
+  return (
+    <group position={position}>
+      {/* 기둥 */}
+      <mesh position={[0, 3, 0]}>
+        <cylinderGeometry args={[0.1, 0.15, 6, 8]} />
+        <meshStandardMaterial color="#333333" metalness={0.8} roughness={0.3} />
+      </mesh>
+      {/* 조명 헤드 */}
+      <mesh position={[0, 6.2, 0]}>
+        <boxGeometry args={[0.8, 0.3, 0.4]} />
+        <meshStandardMaterial color="#444444" metalness={0.5} />
+      </mesh>
+      {/* 포인트 라이트 */}
+      <pointLight
+        position={[0, 5.8, 0]}
+        intensity={15}
+        distance={20}
+        color="#ffaa55"
+        castShadow
+      />
+    </group>
+  )
+}
+
+function StreetLights() {
+  const positions = [
+    [-35, -12], [-20, -12], [-5, -12], [10, -12], [25, -12], [40, -12],
+  ]
+  return (
+    <group>
+      {positions.map((pos, i) => (
+        <StreetLight key={i} position={[pos[0], 0, pos[1]]} />
+      ))}
+    </group>
+  )
+}
+
+function BuildingLights() {
+  return (
+    <group>
+      {/* Office Building 조명 */}
+      <pointLight position={[-25, 8, -6]} intensity={8} distance={15} color="#ffffcc" />
+      <spotLight position={[-25, 0.5, -8]} angle={0.5} intensity={10} distance={12} color="#ffdd88" target-position={[-25, 0, -5]} />
+
+      {/* Shop Building 조명 */}
+      <pointLight position={[0, 5, -4]} intensity={10} distance={12} color="#ff6644" />
+      <spotLight position={[0, 0.5, -5]} angle={0.6} intensity={8} distance={10} color="#ffaa66" />
+
+      {/* Modern Building 조명 */}
+      <pointLight position={[25, 8, -6]} intensity={8} distance={15} color="#aaccff" />
+      <spotLight position={[25, 0.5, -8]} angle={0.5} intensity={10} distance={12} color="#88aaff" target-position={[25, 0, -5]} />
+    </group>
+  )
+}
+
 function App() {
   const [isDark, setIsDark] = useState(true)
   const theme = isDark ? themes.dark : themes.light
@@ -74,19 +127,36 @@ function App() {
           <color attach="background" args={[theme.background]} />
 
           <ambientLight intensity={theme.ambientIntensity} />
-          <directionalLight
-            position={[30, 50, 30]}
-            intensity={isDark ? 0.8 : 1.2}
-            castShadow
-            shadow-mapSize={[2048, 2048]}
-            shadow-camera-far={150}
-            shadow-camera-left={-50}
-            shadow-camera-right={50}
-            shadow-camera-top={50}
-            shadow-camera-bottom={-50}
-          />
-          <directionalLight position={[-20, 20, -20]} intensity={0.5} color="#8ecae6" />
-          <hemisphereLight args={[theme.hemisphereSky, theme.hemisphereGround, 0.3]} />
+
+          {!isDark && (
+            <directionalLight
+              position={[30, 50, 30]}
+              intensity={1.2}
+              castShadow
+              shadow-mapSize={[2048, 2048]}
+              shadow-camera-far={150}
+              shadow-camera-left={-50}
+              shadow-camera-right={50}
+              shadow-camera-top={50}
+              shadow-camera-bottom={-50}
+            />
+          )}
+
+          {isDark && (
+            <>
+              {/* 달빛 효과 */}
+              <directionalLight
+                position={[-30, 40, -20]}
+                intensity={0.15}
+                color="#6688cc"
+              />
+              <StreetLights />
+              <BuildingLights />
+            </>
+          )}
+
+          <directionalLight position={[-20, 20, -20]} intensity={isDark ? 0.1 : 0.5} color="#8ecae6" />
+          <hemisphereLight args={[theme.hemisphereSky, theme.hemisphereGround, isDark ? 0.1 : 0.3]} />
 
           <Suspense fallback={<LoadingFallback />}>
             <BuildingModel url="/output/combined_scene.gltf" />
@@ -95,7 +165,7 @@ function App() {
           <Ground color={theme.ground} />
           <ContactShadows
             position={[0, 0, 0]}
-            opacity={0.4}
+            opacity={isDark ? 0.6 : 0.4}
             scale={100}
             blur={2}
             far={50}
@@ -122,9 +192,13 @@ function App() {
             target={[0, 3, 0]}
           />
 
-          <Sky sunPosition={theme.skyPosition} />
-          <Clouds color={theme.cloudColor} opacity={theme.cloudOpacity} />
-          {isDark && <Stars radius={100} depth={50} count={1000} factor={4} fade speed={1} />}
+          {!isDark && (
+            <>
+              <Sky sunPosition={theme.skyPosition} />
+              <Clouds color={theme.cloudColor} opacity={theme.cloudOpacity} />
+            </>
+          )}
+          {isDark && <Stars radius={100} depth={50} count={2000} factor={4} fade speed={1} />}
         </Canvas>
 
         <button className="theme-toggle" onClick={() => setIsDark(!isDark)}>
