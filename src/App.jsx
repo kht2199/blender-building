@@ -56,6 +56,36 @@ function Clouds({ color, opacity }) {
   )
 }
 
+function Moon() {
+  return (
+    <group position={[60, 80, -80]}>
+      {/* 달 구체 */}
+      <mesh>
+        <sphereGeometry args={[8, 32, 32]} />
+        <meshStandardMaterial
+          color="#ffffee"
+          emissive="#ffffcc"
+          emissiveIntensity={0.5}
+          roughness={0.8}
+        />
+      </mesh>
+      {/* 달빛 조명 */}
+      <directionalLight
+        position={[0, 0, 0]}
+        intensity={0.3}
+        color="#aabbdd"
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-camera-far={200}
+        shadow-camera-left={-100}
+        shadow-camera-right={100}
+        shadow-camera-top={100}
+        shadow-camera-bottom={-100}
+      />
+    </group>
+  )
+}
+
 function StreetLight({ position, color = "#ffaa55" }) {
   return (
     <group position={position}>
@@ -146,12 +176,7 @@ function App() {
 
           {isDark && (
             <>
-              {/* 달빛 효과 */}
-              <directionalLight
-                position={[-30, 40, -20]}
-                intensity={0.2}
-                color="#6688cc"
-              />
+              <Moon />
               <StreetLights />
             </>
           )}
