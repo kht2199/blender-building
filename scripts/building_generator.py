@@ -440,26 +440,6 @@ def export_to_gltf(filepath, export_format='GLTF_SEPARATE'):
     print(f"Exported to: {filepath}")
 
 
-def create_building_scene_1():
-    """씬 1: 기본 2층 건물 + 텍스트 + 입구"""
-    clear_scene()
-
-    building = create_building(
-        "Building_Basic",
-        width=10, depth=8, floor_height=3.5, num_floors=2,
-        wall_color=(0.9, 0.85, 0.75, 1.0)
-    )
-
-    create_text_on_wall("TEST", building, floor_num=2, wall_side="front")
-    create_entrance(building, width=2.5, height=2.8, depth=8)
-
-    # 나무 추가
-    create_tree(location=(-7, -2, 0), height=5, name="Tree_1")
-    create_tree(location=(7, -2, 0), height=4, name="Tree_2")
-
-    export_to_gltf(os.path.join(OUTPUT_DIR, "building_basic.gltf"))
-
-
 def create_building_scene_2():
     """씬 2: 3층 오피스 빌딩 + 도로"""
     clear_scene()
@@ -509,53 +489,6 @@ def create_building_scene_3():
     export_to_gltf(os.path.join(OUTPUT_DIR, "shop_building.gltf"))
 
 
-def create_building_scene_4():
-    """씬 4: 도시 블록 - 여러 건물"""
-    clear_scene()
-
-    # 건물 1: 2층 아파트
-    building1 = create_building(
-        "Apartment_1",
-        width=10, depth=8, floor_height=3, num_floors=2,
-        wall_color=(0.85, 0.8, 0.7, 1.0)
-    )
-    building1.location = (-15, 0, 0)
-    create_text_on_wall("APT", building1, floor_num=2, wall_side="front")
-
-    # 건물 2: 3층 오피스
-    building2 = create_building(
-        "Office_1",
-        width=12, depth=10, floor_height=3.5, num_floors=3,
-        wall_color=(0.75, 0.78, 0.85, 1.0)
-    )
-    building2.location = (5, 0, 0)
-    create_text_on_wall("CORP", building2, floor_num=3, wall_side="front",
-                       text_color=(0.15, 0.25, 0.5, 1.0))
-    create_entrance(building2, width=3, height=3, depth=10)
-
-    # 건물 3: 1층 카페
-    building3 = create_building(
-        "Cafe",
-        width=6, depth=5, floor_height=3.5, num_floors=1,
-        wall_color=(0.9, 0.85, 0.75, 1.0)
-    )
-    building3.location = (22, 0, 0)
-    create_text_on_wall("CAFE", building3, floor_num=1, wall_side="front",
-                       text_color=(0.6, 0.3, 0.1, 1.0))
-
-    # 도로
-    create_road(length=60, width=8, location=(0, -18, 0))
-
-    # 나무들
-    tree_positions = [(-20, -8), (-10, -8), (0, -8), (10, -8), (20, -8)]
-    for i, pos in enumerate(tree_positions):
-        create_tree(location=(pos[0], pos[1], 0),
-                   height=random.uniform(3, 5),
-                   name=f"Tree_{i}")
-
-    export_to_gltf(os.path.join(OUTPUT_DIR, "city_block.gltf"))
-
-
 def create_building_scene_5():
     """씬 5: 모던 스타일 건물"""
     clear_scene()
@@ -592,19 +525,13 @@ def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     # 모든 씬 생성
-    print("\n[1/5] Creating Basic Building Scene...")
-    create_building_scene_1()
-
-    print("\n[2/5] Creating Office Building Scene...")
+    print("\n[1/3] Creating Office Building Scene...")
     create_building_scene_2()
 
-    print("\n[3/5] Creating Shop Building Scene...")
+    print("\n[2/3] Creating Shop Building Scene...")
     create_building_scene_3()
 
-    print("\n[4/5] Creating City Block Scene...")
-    create_building_scene_4()
-
-    print("\n[5/5] Creating Modern Building Scene...")
+    print("\n[3/3] Creating Modern Building Scene...")
     create_building_scene_5()
 
     print("\n" + "="*50)
