@@ -1,6 +1,6 @@
 import { useState, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Environment, ContactShadows, Grid } from '@react-three/drei'
+import { OrbitControls, ContactShadows, Grid, Sky } from '@react-three/drei'
 import BuildingModel from './components/BuildingModel'
 import Sidebar from './components/Sidebar'
 import './App.css'
@@ -120,7 +120,7 @@ function App() {
             maxDistance={100}
             target={[0, 3, 0]}
           />
-          <Environment preset="city" />
+          <Sky sunPosition={[100, 50, 100]} />
         </Canvas>
 
         <div className="controls">
