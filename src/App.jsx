@@ -56,26 +56,31 @@ function Clouds({ color, opacity }) {
   )
 }
 
-function StreetLight({ position }) {
+function StreetLight({ position, color = "#ffaa55" }) {
   return (
     <group position={position}>
       {/* 기둥 */}
-      <mesh position={[0, 3, 0]}>
-        <cylinderGeometry args={[0.1, 0.15, 6, 8]} />
+      <mesh position={[0, 4, 0]}>
+        <cylinderGeometry args={[0.1, 0.15, 8, 8]} />
         <meshStandardMaterial color="#333333" metalness={0.8} roughness={0.3} />
       </mesh>
       {/* 조명 헤드 */}
-      <mesh position={[0, 6.2, 0]}>
-        <boxGeometry args={[0.8, 0.3, 0.4]} />
+      <mesh position={[0, 8.2, 0]}>
+        <boxGeometry args={[1, 0.4, 0.5]} />
         <meshStandardMaterial color="#444444" metalness={0.5} />
+      </mesh>
+      {/* 전구 */}
+      <mesh position={[0, 7.9, 0]}>
+        <sphereGeometry args={[0.2, 8, 8]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={2} />
       </mesh>
       {/* 포인트 라이트 */}
       <pointLight
-        position={[0, 5.8, 0]}
-        intensity={15}
-        distance={20}
-        color="#ffaa55"
-        castShadow
+        position={[0, 7.5, 0]}
+        intensity={50}
+        distance={40}
+        color={color}
+        decay={1.5}
       />
     </group>
   )
@@ -83,31 +88,28 @@ function StreetLight({ position }) {
 
 function StreetLights() {
   const positions = [
-    [-35, -12], [-20, -12], [-5, -12], [10, -12], [25, -12], [40, -12],
+    // 도로 앞쪽 가로등
+    { pos: [-40, -12], color: "#ffaa55" },
+    { pos: [-25, -12], color: "#ffaa55" },
+    { pos: [-10, -12], color: "#ffaa55" },
+    { pos: [5, -12], color: "#ffaa55" },
+    { pos: [20, -12], color: "#ffaa55" },
+    { pos: [35, -12], color: "#ffaa55" },
+    // 건물 뒤쪽 가로등
+    { pos: [-35, 10], color: "#ffcc66" },
+    { pos: [-15, 10], color: "#ffcc66" },
+    { pos: [5, 10], color: "#ffcc66" },
+    { pos: [25, 10], color: "#ffcc66" },
+    { pos: [40, 10], color: "#ffcc66" },
+    // 건물 옆쪽 가로등
+    { pos: [-40, 0], color: "#ffdd88" },
+    { pos: [45, 0], color: "#ffdd88" },
   ]
   return (
     <group>
-      {positions.map((pos, i) => (
-        <StreetLight key={i} position={[pos[0], 0, pos[1]]} />
+      {positions.map((item, i) => (
+        <StreetLight key={i} position={[item.pos[0], 0, item.pos[1]]} color={item.color} />
       ))}
-    </group>
-  )
-}
-
-function BuildingLights() {
-  return (
-    <group>
-      {/* Office Building 조명 */}
-      <pointLight position={[-25, 8, -6]} intensity={8} distance={15} color="#ffffcc" />
-      <spotLight position={[-25, 0.5, -8]} angle={0.5} intensity={10} distance={12} color="#ffdd88" target-position={[-25, 0, -5]} />
-
-      {/* Shop Building 조명 */}
-      <pointLight position={[0, 5, -4]} intensity={10} distance={12} color="#ff6644" />
-      <spotLight position={[0, 0.5, -5]} angle={0.6} intensity={8} distance={10} color="#ffaa66" />
-
-      {/* Modern Building 조명 */}
-      <pointLight position={[25, 8, -6]} intensity={8} distance={15} color="#aaccff" />
-      <spotLight position={[25, 0.5, -8]} angle={0.5} intensity={10} distance={12} color="#88aaff" target-position={[25, 0, -5]} />
     </group>
   )
 }
@@ -147,11 +149,10 @@ function App() {
               {/* 달빛 효과 */}
               <directionalLight
                 position={[-30, 40, -20]}
-                intensity={0.15}
+                intensity={0.2}
                 color="#6688cc"
               />
               <StreetLights />
-              <BuildingLights />
             </>
           )}
 
