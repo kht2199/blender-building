@@ -1,18 +1,20 @@
 import { useState, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, ContactShadows, Grid, Sky } from '@react-three/drei'
+import { OrbitControls, ContactShadows, Grid, Sky, Cloud, Stars } from '@react-three/drei'
 import BuildingModel from './components/BuildingModel'
 import './App.css'
 
 const themes = {
   dark: {
-    background: '#1a1a2e',
-    ground: '#3a5a40',
-    gridColor: '#0f3460',
-    ambientIntensity: 0.4,
-    skyPosition: [100, 50, 100],
-    hemisphereSky: '#87ceeb',
-    hemisphereGround: '#4a6741',
+    background: '#000000',
+    ground: '#1a2a1a',
+    gridColor: '#0f2040',
+    ambientIntensity: 0.3,
+    skyPosition: [100, 10, 100],
+    hemisphereSky: '#1a1a2e',
+    hemisphereGround: '#2a3a2a',
+    cloudColor: '#2a2a3e',
+    cloudOpacity: 0.5,
   },
   light: {
     background: '#e8f4f8',
@@ -22,6 +24,8 @@ const themes = {
     skyPosition: [100, 80, 100],
     hemisphereSky: '#ffffff',
     hemisphereGround: '#90be6d',
+    cloudColor: '#ffffff',
+    cloudOpacity: 0.8,
   }
 }
 
@@ -43,6 +47,18 @@ function Ground({ color }) {
   )
 }
 
+function Clouds({ color, opacity }) {
+  return (
+    <group>
+      <Cloud position={[-30, 25, -20]} speed={0.2} opacity={opacity} color={color} />
+      <Cloud position={[30, 30, -30]} speed={0.1} opacity={opacity} color={color} />
+      <Cloud position={[0, 28, -40]} speed={0.15} opacity={opacity} color={color} />
+      <Cloud position={[-50, 32, 10]} speed={0.1} opacity={opacity} color={color} />
+      <Cloud position={[50, 27, 20]} speed={0.2} opacity={opacity} color={color} />
+    </group>
+  )
+}
+
 function App() {
   const [isDark, setIsDark] = useState(true)
   const theme = isDark ? themes.dark : themes.light
@@ -60,7 +76,7 @@ function App() {
           <ambientLight intensity={theme.ambientIntensity} />
           <directionalLight
             position={[30, 50, 30]}
-            intensity={1.2}
+            intensity={isDark ? 0.8 : 1.2}
             castShadow
             shadow-mapSize={[2048, 2048]}
             shadow-camera-far={150}
@@ -105,7 +121,10 @@ function App() {
             maxPolarAngle={Math.PI / 3}
             target={[0, 3, 0]}
           />
+
           <Sky sunPosition={theme.skyPosition} />
+          <Clouds color={theme.cloudColor} opacity={theme.cloudOpacity} />
+          {isDark && <Stars radius={100} depth={50} count={1000} factor={4} fade speed={1} />}
         </Canvas>
 
         <button className="theme-toggle" onClick={() => setIsDark(!isDark)}>
