@@ -90,7 +90,7 @@ function App() {
           <hemisphereLight args={['#87ceeb', '#4a6741', 0.3]} />
 
           <Suspense fallback={<LoadingFallback />}>
-            <BuildingModel url={selectedBuilding.file} />
+            <BuildingModel key={selectedBuilding.id} url={selectedBuilding.file} />
           </Suspense>
 
           <Ground />

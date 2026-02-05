@@ -1,22 +1,21 @@
-import { useGLTF, Center, Bounds, useBounds } from '@react-three/drei'
+import { useMemo } from 'react'
+import { useGLTF, Center, Bounds } from '@react-three/drei'
 
 function Model({ url }) {
   const { scene } = useGLTF(url)
-  const bounds = useBounds()
 
-  scene.traverse((child) => {
-    if (child.isMesh) {
-      child.castShadow = true
-      child.receiveShadow = true
-    }
-  })
+  const clonedScene = useMemo(() => {
+    const cloned = scene.clone(true)
+    cloned.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true
+        child.receiveShadow = true
+      }
+    })
+    return cloned
+  }, [scene])
 
-  return (
-    <primitive
-      object={scene}
-      onAfterRender={() => bounds.refresh().clip().fit()}
-    />
-  )
+  return <primitive object={clonedScene} />
 }
 
 function BuildingModel({ url }) {
