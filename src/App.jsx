@@ -1,6 +1,6 @@
 import { useState, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Environment, ContactShadows } from '@react-three/drei'
+import { OrbitControls, Environment, ContactShadows, Grid } from '@react-three/drei'
 import BuildingModel from './components/BuildingModel'
 import Sidebar from './components/Sidebar'
 import './App.css'
@@ -101,7 +101,17 @@ function App() {
             blur={2}
             far={50}
           />
-          <gridHelper args={[100, 50, '#0f3460', '#0f3460']} />
+          <Grid
+            args={[100, 100]}
+            cellSize={1}
+            cellThickness={0.5}
+            cellColor="#0f3460"
+            sectionSize={5}
+            sectionThickness={1}
+            sectionColor="#0f3460"
+            fadeDistance={100}
+            infiniteGrid
+          />
 
           <OrbitControls
             enableDamping
