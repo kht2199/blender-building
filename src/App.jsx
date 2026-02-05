@@ -15,7 +15,7 @@ const themes = {
   },
   light: {
     background: '#e8f4f8',
-    ground: '#90be6d',
+    ground: '#669900',
     gridColor: '#aaccdd',
     ambientIntensity: 0.7,
     skyPosition: [100, 80, 100],
