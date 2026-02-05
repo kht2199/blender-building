@@ -1,0 +1,15 @@
+# Blender Building Generator Requirements
+#
+# Note: This project runs inside Blender's Python environment.
+# The 'bpy' module is provided by Blender and cannot be installed via pip.
+#
+# To run the scripts:
+#   1. Open Blender
+#   2. Go to Scripting workspace
+#   3. Run: from scripts import main; main()
+#
+# Or via command line:
+#   blender --background --python -c "from scripts import main; main()"
+
+# No external pip packages required - only Blender's built-in bpy module
+# and Python standard library (os, math, random) are used.
