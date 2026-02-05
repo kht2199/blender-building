@@ -21,7 +21,7 @@ function Model({ url }) {
 function BuildingModel({ url }) {
   return (
     <Bounds fit clip observe margin={1.2}>
-      <Center>
+      <Center top>
         <Model url={url} />
       </Center>
     </Bounds>
