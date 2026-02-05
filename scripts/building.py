@@ -111,16 +111,29 @@ def create_floor(width, depth, height, floor_num, materials, entrance_width=0):
         window_x = -width/2 + width/(num_windows+1) * (i+1)
         window_z = floor_base_z + slab_thickness + wall_height/2
 
-        # 앞면 창문
-        bpy.ops.mesh.primitive_cube_add(
-            size=1,
-            location=(window_x, -depth/2 + wall_thickness/2, window_z)
-        )
-        window = bpy.context.active_object
-        window.name = f"Floor_{floor_num}_Window_Front_{i}"
-        window.scale = (window_width, window_depth, window_height)
-        window.data.materials.append(materials['glass'])
-        floor_objects.append(window)
+        # 앞면 창문 - 1층 입구가 있으면 입구 영역 피하기
+        if floor_num == 1 and entrance_width > 0:
+            # 입구 영역 (-entrance_width/2 ~ entrance_width/2) 피하기
+            if abs(window_x) > entrance_width/2 + window_width/2:
+                bpy.ops.mesh.primitive_cube_add(
+                    size=1,
+                    location=(window_x, -depth/2 + wall_thickness/2, window_z)
+                )
+                window = bpy.context.active_object
+                window.name = f"Floor_{floor_num}_Window_Front_{i}"
+                window.scale = (window_width, window_depth, window_height)
+                window.data.materials.append(materials['glass'])
+                floor_objects.append(window)
+        else:
+            bpy.ops.mesh.primitive_cube_add(
+                size=1,
+                location=(window_x, -depth/2 + wall_thickness/2, window_z)
+            )
+            window = bpy.context.active_object
+            window.name = f"Floor_{floor_num}_Window_Front_{i}"
+            window.scale = (window_width, window_depth, window_height)
+            window.data.materials.append(materials['glass'])
+            floor_objects.append(window)
 
         # 뒷면 창문
         bpy.ops.mesh.primitive_cube_add(
