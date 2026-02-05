@@ -241,6 +241,12 @@
 		{
 			"mesh":16,
 			"name":"Shop_Building_RoofText_SHOP",
+			"rotation":[
+				0.7071068286895752,
+				0,
+				0,
+				0.7071068286895752
+			],
 			"translation":[
 				0,
 				4.300000190734863,
@@ -744,7 +750,7 @@
 						"NORMAL":61,
 						"TEXCOORD_0":62
 					},
-					"indices":56,
+					"indices":63,
 					"material":7
 				}
 			]
@@ -754,9 +760,9 @@
 			"primitives":[
 				{
 					"attributes":{
-						"POSITION":63,
-						"NORMAL":64,
-						"TEXCOORD_0":65
+						"POSITION":64,
+						"NORMAL":65,
+						"TEXCOORD_0":66
 					},
 					"indices":56,
 					"material":7
@@ -768,9 +774,9 @@
 			"primitives":[
 				{
 					"attributes":{
-						"POSITION":66,
-						"NORMAL":67,
-						"TEXCOORD_0":68
+						"POSITION":67,
+						"NORMAL":68,
+						"TEXCOORD_0":69
 					},
 					"indices":56,
 					"material":7
@@ -782,11 +788,11 @@
 			"primitives":[
 				{
 					"attributes":{
-						"POSITION":69,
-						"NORMAL":70,
-						"TEXCOORD_0":71
+						"POSITION":70,
+						"NORMAL":71,
+						"TEXCOORD_0":72
 					},
-					"indices":72,
+					"indices":73,
 					"material":8
 				}
 			]
@@ -1373,6 +1379,12 @@
 		},
 		{
 			"bufferView":63,
+			"componentType":5123,
+			"count":2880,
+			"type":"SCALAR"
+		},
+		{
+			"bufferView":64,
 			"componentType":5126,
 			"count":1984,
 			"max":[
@@ -1385,22 +1397,22 @@
 				-0.875,
 				-0.875
 			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":64,
-			"componentType":5126,
-			"count":1984,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":65,
 			"componentType":5126,
 			"count":1984,
-			"type":"VEC2"
+			"type":"VEC3"
 		},
 		{
 			"bufferView":66,
+			"componentType":5126,
+			"count":1984,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":67,
 			"componentType":5126,
 			"count":1984,
 			"max":[
@@ -1416,19 +1428,19 @@
 			"type":"VEC3"
 		},
 		{
-			"bufferView":67,
+			"bufferView":68,
 			"componentType":5126,
 			"count":1984,
 			"type":"VEC3"
 		},
 		{
-			"bufferView":68,
+			"bufferView":69,
 			"componentType":5126,
 			"count":1984,
 			"type":"VEC2"
 		},
 		{
-			"bufferView":69,
+			"bufferView":70,
 			"componentType":5126,
 			"count":192,
 			"max":[
@@ -1444,19 +1456,19 @@
 			"type":"VEC3"
 		},
 		{
-			"bufferView":70,
+			"bufferView":71,
 			"componentType":5126,
 			"count":192,
 			"type":"VEC3"
 		},
 		{
-			"bufferView":71,
+			"bufferView":72,
 			"componentType":5126,
 			"count":192,
 			"type":"VEC2"
 		},
 		{
-			"bufferView":72,
+			"bufferView":73,
 			"componentType":5123,
 			"count":372,
 			"type":"SCALAR"
@@ -1843,68 +1855,74 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":23808,
+			"byteLength":5760,
 			"byteOffset":252392,
+			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":23808,
+			"byteOffset":258152,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":23808,
-			"byteOffset":276200,
+			"byteOffset":281960,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":15872,
-			"byteOffset":300008,
+			"byteOffset":305768,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":23808,
-			"byteOffset":315880,
+			"byteOffset":321640,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":23808,
-			"byteOffset":339688,
+			"byteOffset":345448,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":15872,
-			"byteOffset":363496,
+			"byteOffset":369256,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":2304,
-			"byteOffset":379368,
+			"byteOffset":385128,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":2304,
-			"byteOffset":381672,
+			"byteOffset":387432,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":1536,
-			"byteOffset":383976,
+			"byteOffset":389736,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":744,
-			"byteOffset":385512,
+			"byteOffset":391272,
 			"target":34963
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":386256,
+			"byteLength":392016,
 			"uri":"shop_building.bin"
 		}
 	]

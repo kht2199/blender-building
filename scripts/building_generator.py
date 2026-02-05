@@ -176,9 +176,9 @@ def create_text_on_roof_edge(text, building, width, depth, num_floors, floor_hei
     # 지붕 높이 계산
     roof_z = num_floors * floor_height + 0.3
 
-    # 지붕 앞쪽 가장자리 가운데에 배치 (글자가 앞을 향하도록)
+    # 지붕 앞쪽 가장자리 가운데에 배치 (글자가 세워져서 앞을 향함)
     text_obj.location = (0, -depth/2 - 0.15, roof_z)
-    text_obj.rotation_euler = (0, 0, 0)  # 글자가 똑바로 서있음
+    text_obj.rotation_euler = (math.pi/2, 0, 0)  # X축 90도 회전하여 세움
 
     text_obj.name = f"{building.name}_RoofText_{text}"
     text_obj.parent = building
