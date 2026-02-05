@@ -6,6 +6,8 @@ Blender를 사용하여 1-3층 규모의 빌딩을 GLTF 형식으로 생성하�
 
 ```
 blender-building/
+├── config/                     # 설정 파일
+│   └── scene_config.json       # 씬 설정 (건물, 나무, 도로 등)
 ├── scripts/                    # Python 스크립트
 │   ├── __init__.py
 │   ├── building_generator.py   # 메인 진입점
@@ -81,3 +83,56 @@ pnpm dev
 - **좌클릭 + 드래그**: 회전
 - **우클릭 + 드래그**: 이동
 - **스크롤**: 줌
+
+## JSON 설정 파일
+
+`config/scene_config.json` 파일을 수정하여 씬을 커스터마이즈할 수 있습니다.
+
+### 설정 예시
+
+```json
+{
+  "scene": {
+    "name": "my_scene",
+    "ground": { "color": [0.23, 0.35, 0.25], "size": 200 }
+  },
+  "buildings": [
+    {
+      "name": "Office_Building",
+      "position": [-25, 0],
+      "floors": 3,
+      "width": 12,
+      "depth": 10,
+      "floorHeight": 4,
+      "wallColor": [0.7, 0.75, 0.8],
+      "text": "OFFICE",
+      "textColor": [0.1, 0.2, 0.4],
+      "textPosition": "wall",
+      "textFloor": 3,
+      "entrance": { "width": 3, "height": 3 }
+    }
+  ],
+  "road": {
+    "enabled": true,
+    "length": 80,
+    "width": 8,
+    "position": [0, -18, 0]
+  },
+  "trees": [
+    { "position": [-35, -8], "height": 4.5 },
+    { "position": [35, -8], "height": 5.2 }
+  ]
+}
+```
+
+### 설정 옵션
+
+| 항목 | 설명 |
+|------|------|
+| `buildings[].position` | 건물 위치 [x, y] |
+| `buildings[].floors` | 층 수 |
+| `buildings[].wallColor` | 벽 색상 [r, g, b] (0-1) |
+| `buildings[].textPosition` | 텍스트 위치 ("wall" 또는 "roof") |
+| `road.enabled` | 도로 활성화 여부 |
+| `trees[].position` | 나무 위치 [x, y] |
+| `trees[].height` | 나무 높이 |
