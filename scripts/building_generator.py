@@ -154,6 +154,38 @@ def create_building(name, width=8, depth=6, floor_height=3.5, num_floors=2,
     return parent
 
 
+def create_text_on_roof_edge(text, building, width, depth, num_floors, floor_height,
+                             text_color=(0.1, 0.1, 0.1, 1.0), text_size=1.0):
+    """건물 지붕 가장자리에 텍스트 추가 (바닥 기준으로 세움)"""
+    # 텍스트 커브 생성
+    bpy.ops.object.text_add()
+    text_obj = bpy.context.active_object
+    text_obj.data.body = text
+    text_obj.data.size = text_size
+    text_obj.data.extrude = 0.08
+    text_obj.data.align_x = 'CENTER'
+    text_obj.data.align_y = 'BOTTOM'
+
+    # 텍스트를 메시로 변환
+    bpy.ops.object.convert(target='MESH')
+
+    # 머티리얼 적용
+    mat = create_material(f"{building.name}_RoofText_{text}", text_color, roughness=0.3)
+    text_obj.data.materials.append(mat)
+
+    # 지붕 높이 계산
+    roof_z = num_floors * floor_height + 0.3
+
+    # 지붕 앞쪽 가장자리 가운데에 배치 (글자가 앞을 향하도록)
+    text_obj.location = (0, -depth/2 - 0.15, roof_z)
+    text_obj.rotation_euler = (0, 0, 0)  # 글자가 똑바로 서있음
+
+    text_obj.name = f"{building.name}_RoofText_{text}"
+    text_obj.parent = building
+
+    return text_obj
+
+
 def create_text_on_wall(text, building, floor_num=1, wall_side="front",
                         text_color=(0.1, 0.1, 0.1, 1.0)):
     """건물 벽면에 텍스트 추가"""
@@ -457,15 +489,19 @@ def create_building_scene_3():
     """씬 3: 1층 상점 건물"""
     clear_scene()
 
+    width, depth, floor_height, num_floors = 8, 6, 4, 1
+
     building = create_building(
         "Shop_Building",
-        width=8, depth=6, floor_height=4, num_floors=1,
+        width=width, depth=depth, floor_height=floor_height, num_floors=num_floors,
         wall_color=(0.95, 0.9, 0.8, 1.0)
     )
 
-    create_text_on_wall("SHOP", building, floor_num=1, wall_side="front",
-                       text_color=(0.8, 0.2, 0.1, 1.0))
-    create_entrance(building, width=3, height=2.8, depth=6)
+    # 지붕 가장자리에 SHOP 텍스트 추가
+    create_text_on_roof_edge("SHOP", building, width=width, depth=depth,
+                             num_floors=num_floors, floor_height=floor_height,
+                             text_color=(0.8, 0.2, 0.1, 1.0), text_size=1.2)
+    create_entrance(building, width=3, height=2.8, depth=depth)
 
     # 나무
     create_tree(location=(-6, 0, 0), height=3.5, name="Tree_1")
