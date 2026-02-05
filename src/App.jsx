@@ -63,17 +63,17 @@ function Moon() {
       <mesh>
         <sphereGeometry args={[8, 32, 32]} />
         <meshStandardMaterial
-          color="#ffffee"
-          emissive="#ffffcc"
-          emissiveIntensity={0.5}
-          roughness={0.8}
+          color="#fffff8"
+          emissive="#ffffee"
+          emissiveIntensity={2}
+          roughness={0.5}
         />
       </mesh>
       {/* 달빛 조명 */}
       <directionalLight
         position={[0, 0, 0]}
-        intensity={0.3}
-        color="#aabbdd"
+        intensity={0.8}
+        color="#ccddef"
         castShadow
         shadow-mapSize={[1024, 1024]}
         shadow-camera-far={200}
