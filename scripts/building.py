@@ -5,8 +5,12 @@ import math
 from .utils import create_material
 
 
-def create_floor(width, depth, height, floor_num, materials):
-    """단일 층 생성"""
+def create_floor(width, depth, height, floor_num, materials, entrance_width=0):
+    """단일 층 생성
+
+    Args:
+        entrance_width: 1층 입구 너비 (0이면 입구 없음)
+    """
     slab_thickness = 0.2
     wall_thickness = 0.15
 
@@ -24,26 +28,78 @@ def create_floor(width, depth, height, floor_num, materials):
     floor_slab.data.materials.append(materials['concrete'])
     floor_objects.append(floor_slab)
 
-    # 벽 생성 (4면)
+    # 벽 생성
     wall_height = height - slab_thickness
-    wall_positions = [
-        ((0, depth/2 - wall_thickness/2, floor_base_z + slab_thickness + wall_height/2),
-         (width, wall_thickness, wall_height), "Back"),
-        ((0, -depth/2 + wall_thickness/2, floor_base_z + slab_thickness + wall_height/2),
-         (width, wall_thickness, wall_height), "Front"),
-        ((width/2 - wall_thickness/2, 0, floor_base_z + slab_thickness + wall_height/2),
-         (wall_thickness, depth - wall_thickness*2, wall_height), "Right"),
-        ((-width/2 + wall_thickness/2, 0, floor_base_z + slab_thickness + wall_height/2),
-         (wall_thickness, depth - wall_thickness*2, wall_height), "Left"),
-    ]
 
-    for pos, scale, name in wall_positions:
-        bpy.ops.mesh.primitive_cube_add(size=1, location=pos)
-        wall = bpy.context.active_object
-        wall.name = f"Floor_{floor_num}_Wall_{name}"
-        wall.scale = scale
-        wall.data.materials.append(materials['wall'])
-        floor_objects.append(wall)
+    # 뒷벽
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(
+        0, depth/2 - wall_thickness/2, floor_base_z + slab_thickness + wall_height/2
+    ))
+    back_wall = bpy.context.active_object
+    back_wall.name = f"Floor_{floor_num}_Wall_Back"
+    back_wall.scale = (width, wall_thickness, wall_height)
+    back_wall.data.materials.append(materials['wall'])
+    floor_objects.append(back_wall)
+
+    # 앞벽 - 1층이고 입구가 있으면 좌/우로 분리
+    if floor_num == 1 and entrance_width > 0:
+        # 입구 좌측 벽
+        left_wall_width = (width - entrance_width) / 2
+        if left_wall_width > 0:
+            bpy.ops.mesh.primitive_cube_add(size=1, location=(
+                -width/2 + left_wall_width/2,
+                -depth/2 + wall_thickness/2,
+                floor_base_z + slab_thickness + wall_height/2
+            ))
+            left_front = bpy.context.active_object
+            left_front.name = f"Floor_{floor_num}_Wall_Front_Left"
+            left_front.scale = (left_wall_width, wall_thickness, wall_height)
+            left_front.data.materials.append(materials['wall'])
+            floor_objects.append(left_front)
+
+        # 입구 우측 벽
+        right_wall_width = (width - entrance_width) / 2
+        if right_wall_width > 0:
+            bpy.ops.mesh.primitive_cube_add(size=1, location=(
+                width/2 - right_wall_width/2,
+                -depth/2 + wall_thickness/2,
+                floor_base_z + slab_thickness + wall_height/2
+            ))
+            right_front = bpy.context.active_object
+            right_front.name = f"Floor_{floor_num}_Wall_Front_Right"
+            right_front.scale = (right_wall_width, wall_thickness, wall_height)
+            right_front.data.materials.append(materials['wall'])
+            floor_objects.append(right_front)
+    else:
+        # 일반 앞벽
+        bpy.ops.mesh.primitive_cube_add(size=1, location=(
+            0, -depth/2 + wall_thickness/2, floor_base_z + slab_thickness + wall_height/2
+        ))
+        front_wall = bpy.context.active_object
+        front_wall.name = f"Floor_{floor_num}_Wall_Front"
+        front_wall.scale = (width, wall_thickness, wall_height)
+        front_wall.data.materials.append(materials['wall'])
+        floor_objects.append(front_wall)
+
+    # 우측벽
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(
+        width/2 - wall_thickness/2, 0, floor_base_z + slab_thickness + wall_height/2
+    ))
+    right_wall = bpy.context.active_object
+    right_wall.name = f"Floor_{floor_num}_Wall_Right"
+    right_wall.scale = (wall_thickness, depth - wall_thickness*2, wall_height)
+    right_wall.data.materials.append(materials['wall'])
+    floor_objects.append(right_wall)
+
+    # 좌측벽
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(
+        -width/2 + wall_thickness/2, 0, floor_base_z + slab_thickness + wall_height/2
+    ))
+    left_wall = bpy.context.active_object
+    left_wall.name = f"Floor_{floor_num}_Wall_Left"
+    left_wall.scale = (wall_thickness, depth - wall_thickness*2, wall_height)
+    left_wall.data.materials.append(materials['wall'])
+    floor_objects.append(left_wall)
 
     # 창문 생성
     window_width = 1.2
@@ -81,8 +137,12 @@ def create_floor(width, depth, height, floor_num, materials):
 
 
 def create_building(name, width=8, depth=6, floor_height=3.5, num_floors=2,
-                   wall_color=(0.85, 0.82, 0.78, 1.0)):
-    """건물 생성"""
+                   wall_color=(0.85, 0.82, 0.78, 1.0), entrance_width=0):
+    """건물 생성
+
+    Args:
+        entrance_width: 1층 입구 너비 (0이면 입구 없음)
+    """
     materials = {
         'concrete': create_material(f"{name}_Concrete", (0.5, 0.5, 0.5, 1.0), roughness=0.9),
         'wall': create_material(f"{name}_Wall", wall_color, roughness=0.7),
@@ -93,7 +153,8 @@ def create_building(name, width=8, depth=6, floor_height=3.5, num_floors=2,
     building_objects = []
 
     for floor_num in range(1, num_floors + 1):
-        floor_objects = create_floor(width, depth, floor_height, floor_num, materials)
+        floor_objects = create_floor(width, depth, floor_height, floor_num, materials,
+                                     entrance_width=entrance_width if floor_num == 1 else 0)
         building_objects.extend(floor_objects)
 
     # 지붕 생성
