@@ -182,26 +182,28 @@ def create_text_on_wall(text, building, floor_num=1, wall_side="front",
 
 
 def create_entrance(building, width=2, height=2.5, depth=6):
-    """건물 입구 생성"""
+    """건물 입구 생성 - 유리 도어문"""
     frame_mat = create_material(f"{building.name}_EntranceFrame",
-                                (0.2, 0.2, 0.25, 1.0), metallic=0.8)
-    door_mat = create_material(f"{building.name}_Door",
-                              (0.4, 0.25, 0.15, 1.0), roughness=0.6)
+                                (0.15, 0.15, 0.18, 1.0), metallic=0.9, roughness=0.2)
+    glass_mat = create_material(f"{building.name}_DoorGlass",
+                               (0.7, 0.85, 0.9, 0.3), metallic=0.1, roughness=0.05)
+    handle_mat = create_material(f"{building.name}_DoorHandle",
+                                (0.8, 0.8, 0.8, 1.0), metallic=1.0, roughness=0.1)
 
     entrance_objects = []
-    frame_thickness = 0.1
-    frame_depth = 0.15
+    frame_thickness = 0.05
+    frame_depth = 0.08
 
-    # 상단 프레임
+    # 외부 프레임 - 상단
     bpy.ops.mesh.primitive_cube_add(size=1, location=(0, -depth/2 + frame_depth/2, height))
     top_frame = bpy.context.active_object
     top_frame.name = f"{building.name}_Entrance_TopFrame"
-    top_frame.scale = (width + frame_thickness*2, frame_depth, frame_thickness)
+    top_frame.scale = (width + frame_thickness*2, frame_depth, frame_thickness*2)
     top_frame.data.materials.append(frame_mat)
     top_frame.parent = building
     entrance_objects.append(top_frame)
 
-    # 좌측 프레임
+    # 외부 프레임 - 좌측
     bpy.ops.mesh.primitive_cube_add(
         size=1,
         location=(-width/2 - frame_thickness/2, -depth/2 + frame_depth/2, height/2)
@@ -213,7 +215,7 @@ def create_entrance(building, width=2, height=2.5, depth=6):
     left_frame.parent = building
     entrance_objects.append(left_frame)
 
-    # 우측 프레임
+    # 외부 프레임 - 우측
     bpy.ops.mesh.primitive_cube_add(
         size=1,
         location=(width/2 + frame_thickness/2, -depth/2 + frame_depth/2, height/2)
@@ -225,27 +227,92 @@ def create_entrance(building, width=2, height=2.5, depth=6):
     right_frame.parent = building
     entrance_objects.append(right_frame)
 
-    # 문
-    door_width = (width - 0.1) / 2
-    for i, x_offset in enumerate([-door_width/2 - 0.025, door_width/2 + 0.025]):
+    # 유리 도어 (양쪽 여닫이)
+    door_width = (width - 0.06) / 2
+    door_height = height - 0.1
+
+    for i, x_offset in enumerate([-door_width/2 - 0.015, door_width/2 + 0.015]):
+        # 문 프레임
+        door_frame_positions = [
+            # 상단 프레임
+            ((x_offset, -depth/2 + frame_depth/2, door_height), (door_width, 0.04, 0.06)),
+            # 하단 프레임
+            ((x_offset, -depth/2 + frame_depth/2, 0.03), (door_width, 0.04, 0.06)),
+            # 좌측 프레임
+            ((x_offset - door_width/2 + 0.02, -depth/2 + frame_depth/2, door_height/2), (0.04, 0.04, door_height)),
+            # 우측 프레임
+            ((x_offset + door_width/2 - 0.02, -depth/2 + frame_depth/2, door_height/2), (0.04, 0.04, door_height)),
+        ]
+
+        for j, (pos, scale) in enumerate(door_frame_positions):
+            bpy.ops.mesh.primitive_cube_add(size=1, location=pos)
+            frame = bpy.context.active_object
+            frame.name = f"{building.name}_DoorFrame_{i}_{j}"
+            frame.scale = scale
+            frame.data.materials.append(frame_mat)
+            frame.parent = building
+            entrance_objects.append(frame)
+
+        # 유리 패널
         bpy.ops.mesh.primitive_cube_add(
             size=1,
-            location=(x_offset, -depth/2 + frame_depth/2, height/2 - 0.1)
+            location=(x_offset, -depth/2 + frame_depth/2, door_height/2)
         )
-        door = bpy.context.active_object
-        door.name = f"{building.name}_Door_{i}"
-        door.scale = (door_width, 0.05, height - 0.3)
-        door.data.materials.append(door_mat)
-        door.parent = building
-        entrance_objects.append(door)
+        glass = bpy.context.active_object
+        glass.name = f"{building.name}_DoorGlass_{i}"
+        glass.scale = (door_width - 0.08, 0.02, door_height - 0.12)
+        glass.data.materials.append(glass_mat)
+        glass.parent = building
+        entrance_objects.append(glass)
 
-    # 캐노피
-    bpy.ops.mesh.primitive_cube_add(size=1, location=(0, -depth/2 - 0.5, height + 0.2))
-    canopy = bpy.context.active_object
-    canopy.name = f"{building.name}_Canopy"
-    canopy.scale = (width + 1, 1.2, 0.1)
-    canopy.data.materials.append(frame_mat)
-    canopy.parent = building
-    entrance_objects.append(canopy)
+        # 문 손잡이
+        handle_x = x_offset + (door_width/2 - 0.15) * (-1 if i == 0 else 1)
+        bpy.ops.mesh.primitive_cylinder_add(
+            radius=0.02,
+            depth=0.15,
+            location=(handle_x, -depth/2 - 0.02, height * 0.45)
+        )
+        handle = bpy.context.active_object
+        handle.name = f"{building.name}_DoorHandle_{i}"
+        handle.rotation_euler = (math.pi/2, 0, 0)
+        handle.data.materials.append(handle_mat)
+        handle.parent = building
+        entrance_objects.append(handle)
+
+    # 중앙 세로 프레임
+    bpy.ops.mesh.primitive_cube_add(
+        size=1,
+        location=(0, -depth/2 + frame_depth/2, door_height/2)
+    )
+    center_frame = bpy.context.active_object
+    center_frame.name = f"{building.name}_Entrance_CenterFrame"
+    center_frame.scale = (0.04, frame_depth, door_height)
+    center_frame.data.materials.append(frame_mat)
+    center_frame.parent = building
+    entrance_objects.append(center_frame)
+
+    # 캐노피 (유리 지붕)
+    canopy_mat = create_material(f"{building.name}_Canopy",
+                                (0.2, 0.2, 0.22, 1.0), metallic=0.9, roughness=0.2)
+    canopy_glass_mat = create_material(f"{building.name}_CanopyGlass",
+                                      (0.8, 0.9, 0.95, 0.2), metallic=0.1, roughness=0.05)
+
+    # 캐노피 프레임
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(0, -depth/2 - 0.6, height + 0.15))
+    canopy_frame = bpy.context.active_object
+    canopy_frame.name = f"{building.name}_CanopyFrame"
+    canopy_frame.scale = (width + 0.8, 1.0, 0.05)
+    canopy_frame.data.materials.append(canopy_mat)
+    canopy_frame.parent = building
+    entrance_objects.append(canopy_frame)
+
+    # 캐노피 유리
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(0, -depth/2 - 0.6, height + 0.12))
+    canopy_glass = bpy.context.active_object
+    canopy_glass.name = f"{building.name}_CanopyGlass"
+    canopy_glass.scale = (width + 0.6, 0.8, 0.02)
+    canopy_glass.data.materials.append(canopy_glass_mat)
+    canopy_glass.parent = building
+    entrance_objects.append(canopy_glass)
 
     return entrance_objects
