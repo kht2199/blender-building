@@ -118,8 +118,8 @@ function App() {
             dampingFactor={0.05}
             minDistance={5}
             maxDistance={100}
-            minPolarAngle={Math.PI / 6}
-            maxPolarAngle={Math.PI / 6}
+            minPolarAngle={Math.PI / 3}
+            maxPolarAngle={Math.PI / 3}
             target={[0, 3, 0]}
           />
           <Sky sunPosition={[100, 50, 100]} />
