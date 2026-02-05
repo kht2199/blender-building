@@ -7,8 +7,8 @@ import './App.css'
 const themes = {
   dark: {
     background: '#000000',
-    ground: '#1a2a1a',
-    gridColor: '#0f2040',
+    ground: '#3a5a40',
+    gridColor: '#0f3460',
     ambientIntensity: 0.3,
     skyPosition: [100, 10, 100],
     hemisphereSky: '#1a1a2e',
