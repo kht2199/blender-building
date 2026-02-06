@@ -5,11 +5,12 @@ import math
 from .utils import create_material
 
 
-def create_floor(width, depth, height, floor_num, materials, entrance_width=0):
+def create_floor(width, depth, height, floor_num, materials, entrance_width=0, entrance_height=2.5):
     """단일 층 생성
 
     Args:
         entrance_width: 1층 입구 너비 (0이면 입구 없음)
+        entrance_height: 입구 높이
     """
     slab_thickness = 0.2
     wall_thickness = 0.15
@@ -70,6 +71,20 @@ def create_floor(width, depth, height, floor_num, materials, entrance_width=0):
             right_front.scale = (right_wall_width, wall_thickness, wall_height)
             right_front.data.materials.append(materials['wall'])
             floor_objects.append(right_front)
+
+        # 입구 위쪽 벽 (문 위 공간 채우기)
+        above_entrance_height = wall_height - entrance_height
+        if above_entrance_height > 0:
+            bpy.ops.mesh.primitive_cube_add(size=1, location=(
+                0,
+                -depth/2 + wall_thickness/2,
+                floor_base_z + slab_thickness + entrance_height + above_entrance_height/2
+            ))
+            above_entrance = bpy.context.active_object
+            above_entrance.name = f"Floor_{floor_num}_Wall_Front_Above"
+            above_entrance.scale = (entrance_width, wall_thickness, above_entrance_height)
+            above_entrance.data.materials.append(materials['wall'])
+            floor_objects.append(above_entrance)
     else:
         # 일반 앞벽
         bpy.ops.mesh.primitive_cube_add(size=1, location=(
@@ -150,11 +165,12 @@ def create_floor(width, depth, height, floor_num, materials, entrance_width=0):
 
 
 def create_building(name, width=8, depth=6, floor_height=3.5, num_floors=2,
-                   wall_color=(0.85, 0.82, 0.78, 1.0), entrance_width=0):
+                   wall_color=(0.85, 0.82, 0.78, 1.0), entrance_width=0, entrance_height=2.5):
     """건물 생성
 
     Args:
         entrance_width: 1층 입구 너비 (0이면 입구 없음)
+        entrance_height: 입구 높이
     """
     materials = {
         'concrete': create_material(f"{name}_Concrete", (0.5, 0.5, 0.5, 1.0), roughness=0.9),
@@ -167,7 +183,8 @@ def create_building(name, width=8, depth=6, floor_height=3.5, num_floors=2,
 
     for floor_num in range(1, num_floors + 1):
         floor_objects = create_floor(width, depth, floor_height, floor_num, materials,
-                                     entrance_width=entrance_width if floor_num == 1 else 0)
+                                     entrance_width=entrance_width if floor_num == 1 else 0,
+                                     entrance_height=entrance_height if floor_num == 1 else 0)
         building_objects.extend(floor_objects)
 
     # 지붕 생성
@@ -260,7 +277,7 @@ def create_entrance(building, width=2, height=2.5, depth=6):
     frame_mat = create_material(f"{building.name}_EntranceFrame",
                                 (0.15, 0.15, 0.18, 1.0), metallic=0.9, roughness=0.2)
     glass_mat = create_material(f"{building.name}_DoorGlass",
-                               (0.7, 0.85, 0.9, 0.3), metallic=0.1, roughness=0.05)
+                               (0.7, 0.85, 0.9, 1.0), metallic=0.1, roughness=0.05, alpha=0.3)
     handle_mat = create_material(f"{building.name}_DoorHandle",
                                 (0.8, 0.8, 0.8, 1.0), metallic=1.0, roughness=0.1)
 

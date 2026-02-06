@@ -27,9 +27,10 @@ def create_scene_from_config(config_name="scene_config.json"):
 
     # 건물 생성
     for building_config in config.get("buildings", []):
-        # 입구 너비 가져오기
+        # 입구 정보 가져오기
         entrance = building_config.get("entrance", {})
         entrance_width = entrance.get("width", 0) if entrance else 0
+        entrance_height = entrance.get("height", 2.5) if entrance else 2.5
 
         building = create_building(
             building_config.get("name", "Building"),
@@ -38,7 +39,8 @@ def create_scene_from_config(config_name="scene_config.json"):
             floor_height=building_config.get("floorHeight", 3.5),
             num_floors=building_config.get("floors", 2),
             wall_color=tuple(building_config.get("wallColor", [0.85, 0.82, 0.78])) + (1.0,),
-            entrance_width=entrance_width
+            entrance_width=entrance_width,
+            entrance_height=entrance_height
         )
 
         # 위치 설정

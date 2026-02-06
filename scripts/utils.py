@@ -19,14 +19,25 @@ def clear_scene():
         bpy.data.curves.remove(curve)
 
 
-def create_material(name, color, metallic=0.0, roughness=0.5):
-    """머티리얼 생성"""
+def create_material(name, color, metallic=0.0, roughness=0.5, alpha=1.0):
+    """머티리얼 생성
+
+    Args:
+        alpha: 투명도 (0.0=완전 투명, 1.0=불투명)
+    """
     mat = bpy.data.materials.new(name=name)
     mat.use_nodes = True
     bsdf = mat.node_tree.nodes["Principled BSDF"]
     bsdf.inputs['Base Color'].default_value = color
     bsdf.inputs['Metallic'].default_value = metallic
     bsdf.inputs['Roughness'].default_value = roughness
+
+    # 투명도 설정
+    if alpha < 1.0:
+        bsdf.inputs['Alpha'].default_value = alpha
+        mat.blend_method = 'BLEND'
+        mat.surface_render_method = 'BLENDED'
+
     return mat
 
 
